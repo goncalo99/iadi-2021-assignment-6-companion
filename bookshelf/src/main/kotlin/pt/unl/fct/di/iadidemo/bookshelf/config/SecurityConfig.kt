@@ -19,13 +19,14 @@ class SecurityConfig(
             .csrf().disable() // This allows applications to access endpoints from any source location
             .authorizeRequests()
             .antMatchers("/swagger-ui.html").permitAll()
+            .antMatchers("/books").permitAll()
             .anyRequest().authenticated()
             .and().httpBasic()
             // Missing the sign-up, sign-in and sign-out endpoints
             // Missing the configuration for filters
             .and()
             .addFilterBefore(UserPasswordAuthenticationFilterToJWT ("/login",
-                super.authenticationManagerBean()),
+                super.authenticationManagerBean(),users),
                 BasicAuthenticationFilter::class.java)
             .addFilterBefore(UserPasswordSignUpFilterToJWT ("/signup", users),
                 BasicAuthenticationFilter::class.java)

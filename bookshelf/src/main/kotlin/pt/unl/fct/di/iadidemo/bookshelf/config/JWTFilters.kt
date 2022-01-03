@@ -43,9 +43,30 @@ private fun addResponseToken(authentication: Authentication, response: HttpServl
     response.addHeader("Authorization", "Bearer $token")
 }
 
+private fun addCustomResponseToken(authentication: Authentication, response: HttpServletResponse, roles: List<String>) {
+
+    val claims = HashMap<String, Any?>()
+    claims["username"] = authentication.name
+    claims["roles"] = roles
+
+    val token = Jwts
+            .builder()
+            .setClaims(claims)
+            .setSubject(JWTSecret.SUBJECT)
+            .setIssuedAt(Date(System.currentTimeMillis()))
+            .setExpiration(Date(System.currentTimeMillis() + JWTSecret.VALIDITY))
+            .signWith(SignatureAlgorithm.HS256, JWTSecret.KEY)
+            .compact()
+
+    response.addHeader("Authorization", "Bearer $token")
+}
+
+
+
 class UserPasswordAuthenticationFilterToJWT (
         defaultFilterProcessesUrl: String?,
-        private val anAuthenticationManager: AuthenticationManager
+        private val anAuthenticationManager: AuthenticationManager,
+        private val users: UserService
 ) : AbstractAuthenticationProcessingFilter(defaultFilterProcessesUrl) {
 
     override fun attemptAuthentication(request: HttpServletRequest?,
@@ -68,9 +89,9 @@ class UserPasswordAuthenticationFilterToJWT (
                                           response: HttpServletResponse,
                                           filterChain: FilterChain?,
                                           auth: Authentication) {
-
         // When returning from the Filter loop, add the token to the response
-        addResponseToken(auth, response)
+        val user = users.findUser(auth.name)
+        addCustomResponseToken(auth, response,user.get().roles.map { it -> it.tag })
     }
 }
 
