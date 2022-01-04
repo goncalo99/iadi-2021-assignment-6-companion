@@ -12,13 +12,13 @@ import pt.unl.fct.di.iadidemo.bookshelf.presentation.api.dto.ImageDTO
 class PublicBookController(val books: BookService) : PublicBooksAPI<BookListDTO> {
     @CanSeeBooks
     override fun getAll(): List<BookListDTO> =
-            books.getAll().map {
-                BookListDTO(
-                        it.id,
-                        it.title,
-                        it.authors.map { AuthorsBookDTO(it.name) },
-                        it.images.map { ImageDTO(it.url) },
-                        it.owner
-                )
-            }
+        books.getAll().map {
+            BookListDTO(
+                it.id,
+                it.title,
+                it.authors.map { AuthorsBookDTO(it.name) },
+                it.images.map { ImageDTO(it.url) },
+                it.owner.username
+            )
+        }
 }

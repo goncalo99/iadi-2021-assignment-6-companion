@@ -21,18 +21,11 @@ class SecurityApplication(
         val r1 = RoleDAO("ADMIN")
         val r2 = RoleDAO("REVIEWER")
         val r3 = RoleDAO("USER")
-        roles.saveAll(listOf(r1, r2, r3))
 
-        val u1 =
-            UserDAO("user1", BCryptPasswordEncoder().encode("password1"), listOf(r3, r2), "User 1", mutableListOf())
-        users.save(u1)
-
-        val u2 = UserDAO("user2", BCryptPasswordEncoder().encode("password2"), listOf(r3), "User 2", mutableListOf())
-        users.save(u2)
-
-        val u3 = UserDAO("admin1", BCryptPasswordEncoder().encode("password1"), listOf(r1), "Admin 1", mutableListOf())
-        users.save(u3)
-
+        val u1 = UserDAO("user1", BCryptPasswordEncoder().encode("password1"), listOf(r3, r2), "User 1", emptyList())
+        val u2 = UserDAO("user2", BCryptPasswordEncoder().encode("password2"), listOf(r3), "User 2", emptyList())
+        val u3 = UserDAO("admin1", BCryptPasswordEncoder().encode("password1"), listOf(r1), "Admin 1", emptyList())
+        val u4 = UserDAO("admin2", BCryptPasswordEncoder().encode("password2"), listOf(r1), "Admin 2", emptyList())
 
         val a1 = AuthorDAO(0, "Philip K. Dick")
         authors.save(a1)
@@ -60,6 +53,8 @@ class SecurityApplication(
         )
 
         books.saveAll(listOf(b1, b2, b3))
+        users.save(u4)
+
     }
 
 }

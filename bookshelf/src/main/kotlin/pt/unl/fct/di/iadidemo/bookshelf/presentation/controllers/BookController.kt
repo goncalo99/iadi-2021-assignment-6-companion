@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 import pt.unl.fct.di.iadidemo.bookshelf.application.services.AuthorService
 import pt.unl.fct.di.iadidemo.bookshelf.application.services.BookService
+import pt.unl.fct.di.iadidemo.bookshelf.application.services.UserService
 import pt.unl.fct.di.iadidemo.bookshelf.config.CanAddBook
 import pt.unl.fct.di.iadidemo.bookshelf.config.CanDeleteBook
 import pt.unl.fct.di.iadidemo.bookshelf.config.CanSeeBook
@@ -31,19 +32,20 @@ import pt.unl.fct.di.iadidemo.bookshelf.presentation.api.dto.ImageDTO
  */
 
 @RestController
-class BookController(val books: BookService, val authors: AuthorService) : BooksAPI {
+class BookController(val books: BookService, val authors: AuthorService, val users: UserService) : BooksAPI {
 
     @CanAddBook
     override fun addOne(elem: BookDTO): Long {
         val authors = authors.findByIds(elem.authors) // May return 400 (invalid request) if they do not exist
-
+        val owner = users.findUser(elem.owner)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found ${elem.owner}") }
         return books.addOne(
             BookDAO(
                 0,
                 elem.title,
                 authors.toMutableList(),
                 elem.images.map { ImageDAO(0, it) },
-                elem.owner
+                owner
             )
         );
     }
@@ -59,21 +61,24 @@ class BookController(val books: BookService, val authors: AuthorService) : Books
                     it.title,
                     it.authors.map { AuthorsBookDTO(it.name) },
                     it.images.map { ImageDTO(it.url) },
-                    it.owner
+                    it.owner.username
                 )
             }
 
     @CanUpdateBook
     override fun updateOne(id: Long, elem: BookDTO) {
         val authors = authors.findByIds(elem.authors) // May return 400 (invalid request) if they do not exist
+        val owner = users.findUser(elem.owner)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found ${elem.owner}") }
         books.updateOne(
             id,
-            BookDAO(0, elem.title, authors.toMutableList(), elem.images.map { ImageDAO(0, it) }, elem.owner)
+            BookDAO(0, elem.title, authors.toMutableList(), elem.images.map { ImageDAO(0, it) }, owner)
         )
     }
 
     @CanDeleteBook
     override fun deleteOne(id: Long) {
+        println("hello")
         books.getOne(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found ${id}") }
         books.deleteOne(id)
     }

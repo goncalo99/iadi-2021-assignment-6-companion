@@ -13,10 +13,10 @@ data class BookDAO(
     @ManyToMany
     var authors: MutableList<AuthorDAO>,
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @OneToMany(cascade = [CascadeType.ALL])
     var images: List<ImageDAO>,
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @ManyToOne(cascade = [CascadeType.PERSIST])
     var owner: UserDAO
 )
 
@@ -46,12 +46,12 @@ data class UserDAO(
 
     var password: String,
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
     val roles: List<RoleDAO>,
 
     val name: String,
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
+    @OneToMany
     var books: List<BookDAO>,
 
     )

@@ -3,7 +3,7 @@ package pt.unl.fct.di.iadidemo.bookshelf.application.services
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
-
+import pt.unl.fct.di.iadidemo.bookshelf.config.UserAuthToken
 
 @Component("securityService")
 class SecurityService {
@@ -11,10 +11,10 @@ class SecurityService {
     @Autowired
     var books: BookService? = null
 
-    fun isOwnerOfBook(principal: UserDetails, bookID: Long): Boolean {
+    fun isOwnerOfBook(principal: UserAuthToken, bookID: Long): Boolean {
         val book = books?.getOne(bookID)?.orElse(null);
         if (book != null)
-            return book.owner.username == principal.username
+            return book.owner.username == principal.name
         return false
     }
 }
