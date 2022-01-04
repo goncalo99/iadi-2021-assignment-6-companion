@@ -21,7 +21,7 @@ class SecurityConfig(
             .antMatchers("/swagger-ui.html").permitAll()
             .antMatchers("/books").permitAll()
             .anyRequest().authenticated()
-            .and().httpBasic()
+            .and().httpBasic().authenticationEntryPoint(CustomAuthenticationEntryPoint())
             // Missing the sign-up, sign-in and sign-out endpoints
             // Missing the configuration for filters
             .and()

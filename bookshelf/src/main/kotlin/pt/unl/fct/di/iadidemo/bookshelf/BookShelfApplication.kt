@@ -26,8 +26,13 @@ class SecurityApplication(
         val u1 = UserDAO("user1",BCryptPasswordEncoder().encode("password1"),listOf(r3,r2),"User 1")
         users.save(u1)
 
-        val u2 = UserDAO("admin1",BCryptPasswordEncoder().encode("password1"), listOf(r1),"Admin 1")
+        val u2 = UserDAO("user2",BCryptPasswordEncoder().encode("password2"),listOf(r3),"User 2")
         users.save(u2)
+
+        val u3 = UserDAO("admin1",BCryptPasswordEncoder().encode("password1"), listOf(r1),"Admin 1")
+        users.save(u3)
+
+
 
         val a1 = AuthorDAO(0,"Philip K. Dick")
         authors.save(a1)
