@@ -26,14 +26,14 @@ class BookService(val books: BookRepository) {
 
     fun getAll(): List<BookDAO> = books.findAll().toList()
 
-    fun addOne(book: BookDAO):Unit { books.save(book) }
+    fun addOne(book: BookDAO): Long = books.save(book).id
 
-    fun getOne(id:Long): Optional<BookDAO> = books.findById(id)
+    fun getOne(id: Long): Optional<BookDAO> = books.findById(id)
 
-    fun updateOne(id:Long, update: BookDAO): Unit {
+    fun updateOne(id: Long, update: BookDAO): Unit {
         val maybeBook = books.findById(id)
 
-        val book = maybeBook.orElseThrow { NoBookException("Book with ${id} was found") }
+        val book = maybeBook.orElseThrow { NoBookException("Book with ${id} was not found") }
         book.authors = update.authors
         book.images = update.images
         book.title = update.title
