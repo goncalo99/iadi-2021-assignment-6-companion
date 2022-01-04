@@ -17,7 +17,8 @@ class PublicBookController(val books: BookService) : PublicBooksAPI<BookListDTO>
                         it.id,
                         it.title,
                         it.authors.map { AuthorsBookDTO(it.name) },
-                        it.images.map { ImageDTO(it.url) }
+                        it.images.map { ImageDTO(it.url) },
+                        it.owner
                 )
             }
 }

@@ -8,14 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import pt.unl.fct.di.iadidemo.bookshelf.domain.BookDAO
 import pt.unl.fct.di.iadidemo.bookshelf.application.services.BookService
-import org.springframework.security.test.context.support.WithMockUser
+import pt.unl.fct.di.iadidemo.bookshelf.domain.BookDAO
+import pt.unl.fct.di.iadidemo.bookshelf.domain.RoleDAO
+import pt.unl.fct.di.iadidemo.bookshelf.domain.UserDAO
 
 
 @RunWith(SpringRunner::class)
@@ -24,16 +27,22 @@ import org.springframework.security.test.context.support.WithMockUser
 class BookControllerTests {
 
     @Autowired
-    lateinit var mvc:MockMvc
+    lateinit var mvc: MockMvc
 
     @MockBean
     lateinit var books: BookService
 
     companion object {
-        val b1 = BookDAO(1,"LOR", mutableListOf(), emptyList())
-        val b2 = BookDAO(2, "Dune", mutableListOf(), emptyList())
+        val r1 = RoleDAO("ADMIN")
+        val r2 = RoleDAO("REVIEWER")
+        val r3 = RoleDAO("USER")
+        val u1 =
+            UserDAO("user1", BCryptPasswordEncoder().encode("password1"), listOf(r3, r2), "User 1", mutableListOf())
+        val u2 = UserDAO("user2", BCryptPasswordEncoder().encode("password2"), listOf(r3), "User 2", mutableListOf())
+        val b1 = BookDAO(1, "LOR", mutableListOf(), emptyList(), u1)
+        val b2 = BookDAO(2, "Dune", mutableListOf(), emptyList(), u2)
 
-        val l = listOf<BookDAO>(b1,b2)
+        val l = listOf<BookDAO>(b1, b2)
 
         val mapper = ObjectMapper()
 

@@ -30,6 +30,8 @@ class BookService(val books: BookRepository) {
 
     fun getOne(id: Long): Optional<BookDAO> = books.findById(id)
 
+    fun deleteOne(id: Long) : Unit = books.deleteById(id)
+
     fun updateOne(id: Long, update: BookDAO): Unit {
         val maybeBook = books.findById(id)
 

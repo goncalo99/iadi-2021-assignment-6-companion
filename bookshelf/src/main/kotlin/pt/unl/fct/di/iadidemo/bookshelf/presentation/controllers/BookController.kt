@@ -37,7 +37,15 @@ class BookController(val books: BookService, val authors: AuthorService) : Books
     override fun addOne(elem: BookDTO): Long {
         val authors = authors.findByIds(elem.authors) // May return 400 (invalid request) if they do not exist
 
-        return books.addOne(BookDAO(0, elem.title, authors.toMutableList(), elem.images.map { ImageDAO(0, it) }));
+        return books.addOne(
+            BookDAO(
+                0,
+                elem.title,
+                authors.toMutableList(),
+                elem.images.map { ImageDAO(0, it) },
+                elem.owner
+            )
+        );
     }
 
     @CanSeeBook
@@ -50,19 +58,23 @@ class BookController(val books: BookService, val authors: AuthorService) : Books
                     it.id,
                     it.title,
                     it.authors.map { AuthorsBookDTO(it.name) },
-                    it.images.map { ImageDTO(it.url) }
+                    it.images.map { ImageDTO(it.url) },
+                    it.owner
                 )
             }
 
     @CanUpdateBook
     override fun updateOne(id: Long, elem: BookDTO) {
         val authors = authors.findByIds(elem.authors) // May return 400 (invalid request) if they do not exist
-
-        books.updateOne(id, BookDAO(0, elem.title, authors.toMutableList(), elem.images.map { ImageDAO(0, it) }))
+        books.updateOne(
+            id,
+            BookDAO(0, elem.title, authors.toMutableList(), elem.images.map { ImageDAO(0, it) }, elem.owner)
+        )
     }
 
     @CanDeleteBook
     override fun deleteOne(id: Long) {
-        TODO("Not implemented")
+        books.getOne(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found ${id}") }
+        books.deleteOne(id)
     }
 }
