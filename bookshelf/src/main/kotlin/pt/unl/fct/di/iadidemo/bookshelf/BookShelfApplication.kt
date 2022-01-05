@@ -28,7 +28,15 @@ class SecurityApplication(
         val u4 = UserDAO("admin2", BCryptPasswordEncoder().encode("password2"), listOf(r1), "Admin 2", emptyList())
 
         val a1 = AuthorDAO(0, "Philip K. Dick")
+        val a2 = AuthorDAO(0, "Author1")
+        val a3 = AuthorDAO(0, "Author2")
+        val a4 = AuthorDAO(0, "Author3")
+
         authors.save(a1)
+        authors.save(a2)
+        authors.save(a3)
+        authors.save(a4)
+
 
         val b1 = BookDAO(
             0,
@@ -40,7 +48,7 @@ class SecurityApplication(
         val b2 = BookDAO(
             0,
             "Do Androids Dream of Electric Sheep?",
-            mutableListOf(a1),
+            mutableListOf(a1,a2,a3,a4),
             listOf(ImageDAO(0, "https://covers.openlibrary.org/b/id/11153217-L.jpg")),
             u2
         )
