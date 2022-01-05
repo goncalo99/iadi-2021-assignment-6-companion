@@ -17,5 +17,7 @@ data class BookListDTO(
 
 data class AuthorsBookDTO(val name: String)
 
+data class AuthorsBookListDTO(val name: String,val id:Long)
+
 
 
