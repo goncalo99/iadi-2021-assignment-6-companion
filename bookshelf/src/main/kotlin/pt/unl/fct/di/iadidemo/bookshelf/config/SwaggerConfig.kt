@@ -12,9 +12,9 @@ class SwaggerConfig {
     fun customOpenAPI(): OpenAPI? {
         return OpenAPI().info(
             Info().apply {
-                title("Sample OpenAPI -- IADI 2021/22")
+                title("Book Management -- IADI 2021/22")
                 version("1.0")
-                description("This is a sample for the openAPI lab")
+                description("This is a book management API")
                 termsOfService("http://swagger.io/terms/")
                 license(
                     License().name("Apache 2.0")

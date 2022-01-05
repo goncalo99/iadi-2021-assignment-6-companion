@@ -35,11 +35,11 @@ import pt.unl.fct.di.iadidemo.bookshelf.presentation.api.dto.ImageDTO
 class BookController(val books: BookService, val authors: AuthorService, val users: UserService) : BooksAPI {
 
     @CanAddBook
-    override fun addOne(elem: BookDTO): Long {
+    override fun addOne(elem: BookDTO): BookListDTO {
         val authors = authors.findByIds(elem.authors) // May return 400 (invalid request) if they do not exist
         val owner = users.findUser(elem.owner)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found ${elem.owner}") }
-        return books.addOne(
+        val id = books.addOne(
             BookDAO(
                 0,
                 elem.title,
@@ -48,6 +48,13 @@ class BookController(val books: BookService, val authors: AuthorService, val use
                 owner
             )
         );
+        return BookListDTO(
+            id,
+            elem.title,
+            authors.map { AuthorsBookDTO(it.name) },
+            elem.images.map { ImageDTO(it) },
+            owner.username
+        )
     }
 
     @CanSeeBook
@@ -66,7 +73,7 @@ class BookController(val books: BookService, val authors: AuthorService, val use
             }
 
     @CanUpdateBook
-    override fun updateOne(id: Long, elem: BookDTO) {
+    override fun updateOne(id: Long, elem: BookDTO): BookListDTO {
         val authors = authors.findByIds(elem.authors) // May return 400 (invalid request) if they do not exist
         val owner = users.findUser(elem.owner)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found ${elem.owner}") }
@@ -74,12 +81,19 @@ class BookController(val books: BookService, val authors: AuthorService, val use
             id,
             BookDAO(0, elem.title, authors.toMutableList(), elem.images.map { ImageDAO(0, it) }, owner)
         )
+        return BookListDTO(
+            id,
+            elem.title,
+            authors.map { AuthorsBookDTO(it.name) },
+            elem.images.map { ImageDTO(it) },
+            owner.username
+        )
     }
 
     @CanDeleteBook
     override fun deleteOne(id: Long) {
-        println("hello")
         books.getOne(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found ${id}") }
         books.deleteOne(id)
     }
+
 }
