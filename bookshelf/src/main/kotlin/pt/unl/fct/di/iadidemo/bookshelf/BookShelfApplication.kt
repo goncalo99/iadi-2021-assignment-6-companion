@@ -48,7 +48,7 @@ class SecurityApplication(
         val b2 = BookDAO(
             0,
             "Do Androids Dream of Electric Sheep?",
-            mutableListOf(a1,a2,a3,a4),
+            mutableListOf(a1),
             listOf(ImageDAO(0, "https://covers.openlibrary.org/b/id/11153217-L.jpg")),
             u2
         )
@@ -59,8 +59,50 @@ class SecurityApplication(
             listOf(ImageDAO(0, "https://covers.openlibrary.org/b/id/10045188-L.jpg")),
             u3
         )
+        val b4 = BookDAO(
+            0,
+            "Book 4",
+            mutableListOf(a4),
+            listOf(ImageDAO(0, "http://via.placeholder.com/200x300")),
+            u2
+        )
+        val b5 = BookDAO(
+            0,
+            "Book 5",
+            mutableListOf(a1, a4),
+            listOf(ImageDAO(0, "http://via.placeholder.com/200x300")),
+            u1
+        )
+        val b6 = BookDAO(
+            0,
+            "Book 6",
+            mutableListOf(a3),
+            listOf(ImageDAO(0, "http://via.placeholder.com/200x300")),
+            u2
+        )
+        val b7 = BookDAO(
+            0,
+            "Book 7",
+            mutableListOf(a2),
+            listOf(ImageDAO(0, "http://via.placeholder.com/200x300")),
+            u1
+        )
+        val b8 = BookDAO(
+            0,
+            "Book 8",
+            mutableListOf(a2, a4, a3),
+            listOf(ImageDAO(0, "http://via.placeholder.com/200x300")),
+            u2
+        )
+        val b9 = BookDAO(
+            0,
+            "Book 9",
+            mutableListOf(a4),
+            listOf(ImageDAO(0, "http://via.placeholder.com/200x300")),
+            u3
+        )
 
-        books.saveAll(listOf(b1, b2, b3))
+        books.saveAll(listOf(b1, b2, b3, b4, b5, b6, b7, b8, b9))
         users.save(u4)
 
     }

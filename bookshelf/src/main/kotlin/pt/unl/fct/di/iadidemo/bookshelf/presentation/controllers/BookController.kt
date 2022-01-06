@@ -75,18 +75,18 @@ class BookController(val books: BookService, val authors: AuthorService, val use
     @CanUpdateBook
     override fun updateOne(id: Long, elem: BookDTO): BookListDTO {
         val authors = authors.findByIds(elem.authors) // May return 400 (invalid request) if they do not exist
-        val owner = users.findUser(elem.owner)
+        val book = books.getOne(id)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Book not found ${elem.owner}") }
         books.updateOne(
             id,
-            BookDAO(0, elem.title, authors.toMutableList(), elem.images.map { ImageDAO(0, it) }, owner)
+            BookDAO(0, elem.title, authors.toMutableList(), elem.images.map { ImageDAO(0, it) }, book.owner)
         )
         return BookListDTO(
             id,
             elem.title,
             authors.map { AuthorsBookDTO(it.name) },
             elem.images.map { ImageDTO(it) },
-            owner.username
+            book.owner.username
         )
     }
 
